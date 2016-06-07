@@ -4,22 +4,21 @@
 \alias{FourierBasis}
 \title{Finds the discrete Fourier transformation matrix.}
 \usage{
-FourierBasis(train, tlist, M, N)
+FourierBasis(tlist, N, train = NULL)
 }
 \arguments{
-\item{PHI}{Measurement matrix.}
+\item{tlist}{an array of the specific points where the basis are evaluated at.}
 
-\item{y}{Sample from original signal.}
+\item{N}{number of basis in the matrix.}
 
-\item{eta}{Tolerance level in determining convergence of marginal likelihood.}
-
-\item{verbose}{Print to screen which basis are added, re-estimated, or deleted.}
+\item{train}{indices corresponding to which rows of the matrix to keep.}
 }
 \value{
-The sparse signal as found by the fast Laplace algorithm.
+A PxN discrete Fourier transformation matrix where P is equal to the
+       length of \code{train} and N is the number of basis.
 }
 \description{
-Given samples from some signal and given a measurement matrix, find the
-sparse respresentation of a signal using compressive sensing.
+Uses the package \code{fda} to find a matrix where the columns are the different
+basis and the rows are where the basis are evaluated at.
 }
 

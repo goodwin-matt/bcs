@@ -1,24 +1,26 @@
 #' Finds the discrete wavelet transform matrix.
 #'
-#' @param PHI Measurement matrix.
-#' @param y Sample from original signal.
-#' @param eta Tolerance level in determining convergence of marginal likelihood.
-#' @param verbose Print to screen which basis are added, re-estimated, or deleted.
-#' @return The sparse signal as found by the fast Laplace algorithm.
+#' Uses the package \code{wmtsa} to find the matrix of a wavelet basis. Each
+#' column is a basis function from the given basis, evaluated at particular points
+#' along the rows of the matrix.
+#'
+#' @param signal original signal to find the wavelet transform for.
+#' @param N number of wavelet basis to keep.
+#' @param train the rows to keep of the matrix.
+#' @param wavelet the type of wavelet basis to use. See the documentation for the
+#'        package \code{wmtsa} for more information.
+#' @return A PxN discrete wavelet transform matrix, where P is equal to the
+#'        length of \code{train} and N is the number of basis.
 #' @export
-WaveletBasis <- function(train,N,signal,wavelet){
-  # Function for finding the DWT matrix
-  # Args:
-  #   train: the time indice points to evaluate the basis functions at
-  #   N: the number of basis functions to find
-  #   signal: the original signal be decomposed into basis functions.
-  #   wavelet: the type of wavelet for the decomposition.
-  # Returns:
-  #   The DWT matrix evaluated at the training point indices
-  w <- wavDWT(signal,wavelet=wavelet)
+WaveletBasis <- function(signal, N, wavelet = 'Haar', train = NULL){
+  P <- length(signal)
+  # Default for training points is to use all points
+  if(is.null(train)){
+    train <- 1:P
+  }
   M <- length(train)
+  w <- wmtsa::wavDWT(signal,wavelet=wavelet)
   lvl <- w$dictionary$n.levels
-  #basis <- matrix(NA,2^lvl,2^lvl)
   basis <- matrix(NA,M,N)
   compt <- 1
   w$data[lvl+1][[1]] <- 0
@@ -36,27 +38,22 @@ WaveletBasis <- function(train,N,signal,wavelet){
   return(basis)
 }
 
-
 #' Finds the discrete Fourier transformation matrix.
 #'
-#' Given samples from some signal and given a measurement matrix, find the
-#' sparse respresentation of a signal using compressive sensing.
+#' Uses the package \code{fda} to find a matrix where the columns are the different
+#' basis and the rows are where the basis are evaluated at.
 #'
-#' @param PHI Measurement matrix.
-#' @param y Sample from original signal.
-#' @param eta Tolerance level in determining convergence of marginal likelihood.
-#' @param verbose Print to screen which basis are added, re-estimated, or deleted.
-#' @return The sparse signal as found by the fast Laplace algorithm.
+#' @param tlist an array of the specific points where the basis are evaluated at.
+#' @param N number of basis in the matrix.
+#' @param train indices corresponding to which rows of the matrix to keep.
+#' @return A PxN discrete Fourier transformation matrix where P is equal to the
+#'        length of \code{train} and N is the number of basis.
 #' @export
-FourierBasis <- function(train,tlist,M,N){
-  # Function for finding the DFT matrix
-  # Args:
-  #   train: the time indice points to evaluate the basis functions at
-  #   tlist: an array of the specific time points where the signal is evaluated at
-  #   M: how many time points there are, the length of tlist
-  #   N: how many basis to keep (how many columns in the matrix)
-  # Returns:
-  #   The DFT matrix evaluated at the training point indices
+FourierBasis <- function(tlist, N, train = NULL){
+  M <- length(tlist)
+  if(is.null(train)){
+    train <- 1:M
+  }
   if(N%%2==0)
     bFor <- create.fourier.basis(c(tlist[1],tlist[M]),N,dropind=N-1)
   else
@@ -64,29 +61,26 @@ FourierBasis <- function(train,tlist,M,N){
   return(eval.basis(tlist[train],bFor))
 }
 
-#' Finds the transformation matrix for b-spline basis..
+#' Finds the transformation matrix for the B-spline basis.
 #'
-#' Given samples from some signal and given a measurement matrix, find the
-#' sparse respresentation of a signal using compressive sensing.
+#' Uses the package \code{fda} to find a matrix where each column is a basis
+#' function from the B-spline basis, evaluated at particular points along the
+#' rows of the matrix.
 #'
-#' @param PHI Measurement matrix.
-#' @param y Sample from original signal.
-#' @param eta Tolerance level in determining convergence of marginal likelihood.
-#' @param verbose Print to screen which basis are added, re-estimated, or deleted.
-#' @return The sparse signal as found by the fast Laplace algorithm.
+#' @param tlist an array of the specific points where the basis are evaluated at.
+#' @param N number of basis in the matrix.
+#' @param train indices corresponding to which rows of the matrix to keep.
+#' @return A PxN matrix where P is equal to the length of \code{train} and N is
+#'        the number of basis.
 #' @export
-BSplineBasis <- function(train,tlist,M,N){
-  # Function for finding the DFT matrix
-  # Args:
-  #   train: the time indice points to evaluate the basis functions at
-  #   tlist: an array of the specific time points where the signal is evaluated at
-  #   M: how many time points there are (how many rows in the matrix)
-  #   N: how many basis to keep (how many columns in the matrix)
-  # Returns:
-  #   The matrix representing the b-spline basis evaluated at the training point indices
-  # The first two lines below shift the time scale so that the difference
-  # between knots is roughly equal to 1. To see where the knots are placed
-  # take bSpl$params
+BSplineBasis <- function(tlist, N, train = NULL){
+  M <- length(tlist)
+  if(is.null(train)){
+    train <- 1:M
+  }
+  # The first two lines below shift the time scale so that the difference between
+  # knots is roughly equal to 1. To see where the knots are placed take
+  # bSpl$params
   tlist.diff <- tlist[2] - tlist[1]
   tlist <- tlist/tlist.diff
   bSpl <- create.bspline.basis(c(tlist[1],tlist[M]),N)

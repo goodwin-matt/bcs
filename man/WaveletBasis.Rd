@@ -4,21 +4,25 @@
 \alias{WaveletBasis}
 \title{Finds the discrete wavelet transform matrix.}
 \usage{
-WaveletBasis(train, N, signal, wavelet)
+WaveletBasis(signal, N, train, wavelet)
 }
 \arguments{
-\item{PHI}{Measurement matrix.}
+\item{signal}{original signal to find the wavelet transform for.}
 
-\item{y}{Sample from original signal.}
+\item{N}{number of wavelet basis to keep.}
 
-\item{eta}{Tolerance level in determining convergence of marginal likelihood.}
+\item{train}{the rows to keep of the matrix.}
 
-\item{verbose}{Print to screen which basis are added, re-estimated, or deleted.}
+\item{wavelet}{the type of wavelet basis to use. See the documentation for the
+package \code{wmtsa} for more information.}
 }
 \value{
-The sparse signal as found by the fast Laplace algorithm.
+A PxN discrete wavelet transform matrix, where P is equal to the
+       length of \code{train} and N is the number of basis.
 }
 \description{
-Finds the discrete wavelet transform matrix.
+Uses the package \code{wmtsa} to find the matrix of a wavelet basis. Each
+column is a basis function from the given basis, evaluated at particular points
+along the rows of the matrix.
 }
 
