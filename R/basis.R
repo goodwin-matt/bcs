@@ -12,7 +12,7 @@
 #' @return A PxN discrete wavelet transform matrix, where P is equal to the
 #'        length of \code{train} and N is the number of basis.
 #' @export
-WaveletBasis <- function(signal, N, wavelet = 'Haar', train = NULL){
+WaveletBasis <- function(signal, N, train = NULL, wavelet = 'Haar'){
   P <- length(signal)
   # Default for training points is to use all points
   if(is.null(train)){
@@ -30,7 +30,7 @@ WaveletBasis <- function(signal, N, wavelet = 'Haar', train = NULL){
   for (i in 1:(lvl+1)){
     for (j in 1:2^(lvl-i)){
       w$data[[i]][j] <- 1
-      basis[,compt] <- reconstruct(w)[train]
+      basis[,compt] <- wmtsa::reconstruct(w)[train]
       w$data[[i]][j] <- 0
       compt <- compt + 1
     }
@@ -54,11 +54,12 @@ FourierBasis <- function(tlist, N, train = NULL){
   if(is.null(train)){
     train <- 1:M
   }
+  # Forces the basis to be even
   if(N%%2==0)
-    bFor <- create.fourier.basis(c(tlist[1],tlist[M]),N,dropind=N-1)
+    bFor <- fda::create.fourier.basis(c(tlist[1],tlist[M]),N,dropind=N-1)
   else
-    bFor <- create.fourier.basis(c(tlist[1],tlist[M]),N)
-  return(eval.basis(tlist[train],bFor))
+    bFor <- fda::create.fourier.basis(c(tlist[1],tlist[M]),N)
+  return(fda::eval.basis(tlist[train],bFor))
 }
 
 #' Finds the transformation matrix for the B-spline basis.
@@ -83,7 +84,7 @@ BSplineBasis <- function(tlist, N, train = NULL){
   # bSpl$params
   tlist.diff <- tlist[2] - tlist[1]
   tlist <- tlist/tlist.diff
-  bSpl <- create.bspline.basis(c(tlist[1],tlist[M]),N)
-  return(eval.basis(tlist[train],bSpl))
+  bSpl <- fda::create.bspline.basis(c(tlist[1],tlist[M]),N)
+  return(fda::eval.basis(tlist[train],bSpl))
 }
 
