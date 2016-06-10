@@ -9,7 +9,7 @@
 #include <iostream>
 #include <iomanip>
 using namespace Rcpp;
-
+//test
 //' @useDynLib bcs
 //' @importFrom Rcpp sourceCpp
 
