@@ -89,6 +89,8 @@ arma::umat setdiff(arma::umat first, arma::umat second){
 //' @param y CS measurements.
 //' @param sigma2 Initial noise variance.
 //' @param eta Threshold in determining convergence of marginal likelihood.
+//' @param roundit Whether or not to round the marginal likelihood, in order to
+//'       avoid machine precision error.
 //' @param verbose Print to screen which basis are added, re-estimated, or deleted.
 //' @return A list containing the following elements:
 //' \tabular{lll}{
@@ -107,7 +109,8 @@ arma::umat setdiff(arma::umat first, arma::umat second){
 //' and Statistics, C. M. Bishop and B. J. Frey, Eds., 2003.
 //' @export
 // [[Rcpp::export]]
-List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta, bool verbose){
+List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
+                 bool roundit = 0, bool verbose = 0){
   double M = PHI.n_rows;
   double N = PHI.n_cols;
 
@@ -153,6 +156,7 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta, bool ver
   arma::mat mui;
   arma::mat Sigi;
   arma::mat Alpha;
+  arma::mat round_ml;
   // Vector of the possible basis indices.
   arma::uvec range_mat = arma::linspace<arma::uvec>(0,N-1,N);
   arma::umat range_m = arma::umat(range_mat);
@@ -161,6 +165,10 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta, bool ver
   // Keeps track of how many deleted basis there are in deleted vector
   arma::uword delete_count = 0;
   for(int count=0; count<max_it; count++){
+    if(count % 50 == 0){ //check to make sure there aren't user interrupts
+      Rcpp::checkUserInterrupt();
+    }
+
     //***************** First calculate all of the alphas **********************
     // For the alphas that are infinity.
     arma::mat s = S;
@@ -189,6 +197,7 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta, bool ver
     discriminant.elem(find(discriminant<0)).zeros();
     arma::mat nextAlphas = (-B - sqrt(discriminant) ) / (2*A);
 
+
     // Chooses the next alpha that maximizes marginal likelihood.
     double inf = 1.0/0.0;
     arma::mat Ones; Ones.ones(N);
@@ -198,12 +207,6 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta, bool ver
     arma::umat ig0 = find(theta>lambda);
     arma::umat ire = ::intersect(ig0,indices.head_rows(add_count));
     // These are the indices of where the values appear in the vector "indices" above.
-//     if(count==5){
-//       test1 = ig0;
-//       test2 = ire;
-//       return List::create(Named("test1",test1),
-//                           Named("test2",test2));
-//     }
     arma::umat which = ire.col(1);
     // Indices for re-estimation.
     ire = ire.col(0);
@@ -251,9 +254,14 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta, bool ver
 
     // Finds the max of the marginal likelihood.
     arma::uword idx;
-    arma::mat round_ml = round(ml*pow(10,7))/pow(10,7);
-    // TODO: When comparing this with matlab code it is only accurate to within
+    // NOTE: When comparing this with the matlab code it is only accurate to within
     // seven decimal places, then you start getting little errors
+    if(roundit == TRUE){
+      round_ml = round(ml*pow(10,7))/pow(10,7);
+    }
+    else{
+      round_ml = ml;
+    }
     ML(count) = round_ml.max(idx);
 
     // Checks convergence.
@@ -267,10 +275,6 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta, bool ver
     // Finds any basis that needs to be re-estimated.
     arma::uvec w = find(indices.head_rows(add_count)==idx);
     // The update formulas below can be found in the appendix of [3].
-//     if(count==8){
-//       Rcout << theta(idx) << " " << lambda << "\n";
-//       Rcout << round_ml << "\n";
-//     }
     if(theta(idx) > lambda){
       if(w.n_elem>0){  // Re-estimates basis.
         Alpha = nextAlphas(idx);

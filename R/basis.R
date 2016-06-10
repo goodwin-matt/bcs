@@ -4,7 +4,8 @@
 #' column is a basis function from the given basis, evaluated at particular points
 #' along the rows of the matrix.
 #'
-#' @param signal original signal to find the wavelet transform for.
+#' @param signal original signal to find the wavelet transform for. Must be the
+#'        same length as the number of basis.
 #' @param N number of wavelet basis to keep.
 #' @param train the rows to keep of the matrix.
 #' @param wavelet the type of wavelet basis to use. See the documentation for the
@@ -56,7 +57,7 @@ FourierBasis <- function(tlist, N, train = NULL){
   }
   # Forces the basis to be even
   if(N%%2==0)
-    bFor <- fda::create.fourier.basis(c(tlist[1],tlist[M]),N,dropind=N-1)
+    suppressWarnings(bFor <- fda::create.fourier.basis(c(tlist[1],tlist[M]),N,dropind=N-1))
   else
     bFor <- fda::create.fourier.basis(c(tlist[1],tlist[M]),N)
   return(fda::eval.basis(tlist[train],bFor))

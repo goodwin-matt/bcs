@@ -4,7 +4,7 @@ test_that("General output", {
   bFor <- data.matrix(read.csv('bForEZ.csv',header=TRUE)[,-1])
   signal <- matrix(read.csv('signalEZ.csv',header=TRUE)[,-1],100,1)
   # testing when we round the maximum likelihood to 7 digits
-  test.e <- FastLaplace(bFor,signal,sd(signal)^2/100,1e-8,FALSE)
+  test.e <- FastLaplace(bFor, signal, sd(signal)^2/100, 1e-8)
   expect_equal(sum(test.e[[1]]),-0.142390884766597281)
   expect_equal(sum(test.e[[2]]),4430)
   expect_equal(test.e[[3]][1],0.40479148230739425696)

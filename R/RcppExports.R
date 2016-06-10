@@ -22,6 +22,8 @@ setdiff <- function(first, second) {
 #' @param y CS measurements.
 #' @param sigma2 Initial noise variance.
 #' @param eta Threshold in determining convergence of marginal likelihood.
+#' @param roundit Whether or not to round the marginal likelihood, in order to
+#'       avoid machine precision error.
 #' @param verbose Print to screen which basis are added, re-estimated, or deleted.
 #' @return A list containing the following elements:
 #' \tabular{lll}{
@@ -39,7 +41,7 @@ setdiff <- function(first, second) {
 #' for sparse Bayesian models,” in Proc. 9th Int. Workshop Artificial Intelligence
 #' and Statistics, C. M. Bishop and B. J. Frey, Eds., 2003.
 #' @export
-FastLaplace <- function(PHI, y, sigma2, eta, verbose) {
-    .Call('bcs_FastLaplace', PACKAGE = 'bcs', PHI, y, sigma2, eta, verbose)
+FastLaplace <- function(PHI, y, sigma2, eta, roundit = 0L, verbose = 0L) {
+    .Call('bcs_FastLaplace', PACKAGE = 'bcs', PHI, y, sigma2, eta, roundit, verbose)
 }
 

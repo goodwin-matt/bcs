@@ -32,8 +32,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // FastLaplace
-List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta, bool verbose);
-RcppExport SEXP bcs_FastLaplace(SEXP PHISEXP, SEXP ySEXP, SEXP sigma2SEXP, SEXP etaSEXP, SEXP verboseSEXP) {
+List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta, bool roundit, bool verbose);
+RcppExport SEXP bcs_FastLaplace(SEXP PHISEXP, SEXP ySEXP, SEXP sigma2SEXP, SEXP etaSEXP, SEXP rounditSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -41,8 +41,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< double >::type sigma2(sigma2SEXP);
     Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< bool >::type roundit(rounditSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    __result = Rcpp::wrap(FastLaplace(PHI, y, sigma2, eta, verbose));
+    __result = Rcpp::wrap(FastLaplace(PHI, y, sigma2, eta, roundit, verbose));
     return __result;
 END_RCPP
 }
