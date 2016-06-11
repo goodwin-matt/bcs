@@ -90,7 +90,7 @@ arma::umat setdiff(arma::umat first, arma::umat second){
 //' @param sigma2 Initial noise variance.
 //' @param eta Threshold in determining convergence of marginal likelihood.
 //' @param roundit Whether or not to round the marginal likelihood, in order to
-//'       avoid machine precision error.
+//'       avoid machine precision error when comparing across platforms.
 //' @param verbose Print to screen which basis are added, re-estimated, or deleted.
 //' @return A list containing the following elements:
 //' \tabular{lll}{
