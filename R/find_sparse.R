@@ -27,12 +27,9 @@
 FindSparse <- function(PHI, y, eta = 1e-8, roundit = FALSE, verbose=FALSE){
   M <- dim(PHI)[1]
   N <- dim(PHI)[2]
-  fl <- FastLaplace(PHI, y, stats::sd(y)^2/M, eta, roundit = roundit,
+  fl <- FastLaplace(PHI, y, stats::sd(y) ^ 2 / M, eta, roundit = roundit,
                     verbose = verbose)
-  x.lap <- rep(0,N)
+  x.lap <- rep(0, N)
   x.lap[fl[[2]]] <- fl[[1]]
   return(x.lap)
 }
-
-
-

@@ -16,25 +16,25 @@
 #' @return A PxN discrete wavelet transform matrix, where P is equal to the
 #'        length of \code{train} and N is the number of basis.
 #' @export
-WaveletBasis <- function(signal, N, train = NULL, wavelet = 'Haar'){
+WaveletBasis <- function(signal, N, train = NULL, wavelet = "Haar"){
   P <- length(signal)
   # Default for training points is to use all points
-  if(is.null(train)){
+  if (is.null(train)){
     train <- 1:P
   }
   M <- length(train)
-  w <- wmtsa::wavDWT(signal,wavelet=wavelet)
+  w <- wmtsa::wavDWT(signal, wavelet = wavelet)
   lvl <- w$dictionary$n.levels
-  basis <- matrix(NA,M,N)
+  basis <- matrix(NA, M, N)
   compt <- 1
-  w$data[lvl+1][[1]] <- 0
+  w$data[lvl + 1][[1]] <- 0
   for (i in 1:lvl){
-    w$data[[i]]<-rep(0,2^(lvl-i))
+    w$data[[i]] <- rep(0, 2 ^ (lvl - i))
   }
-  for (i in 1:(lvl+1)){
-    for (j in 1:2^(lvl-i)){
+  for (i in 1:(lvl + 1)){
+    for (j in 1:2 ^ (lvl - i)){
       w$data[[i]][j] <- 1
-      basis[,compt] <- wmtsa::reconstruct(w)[train]
+      basis[, compt] <- wmtsa::reconstruct(w)[train]
       w$data[[i]][j] <- 0
       compt <- compt + 1
     }
@@ -58,15 +58,16 @@ WaveletBasis <- function(signal, N, train = NULL, wavelet = 'Haar'){
 FourierBasis <- function(tlist, N, train = NULL){
   P <- length(tlist)
   # Default for training points is to use all points
-  if(is.null(train)){
+  if (is.null(train)){
     train <- 1:P
   }
   # Forces fda to keep an even number of basis
-  if(N%%2==0)
-    suppressWarnings(bFor <- fda::create.fourier.basis(c(tlist[1],tlist[P]),N,dropind=N-1))
+  if (N %% 2 == 0)
+    suppressWarnings(b.for <- fda::create.fourier.basis(c(tlist[1], tlist[P]),
+                                                        N, dropind = N - 1))
   else
-    bFor <- fda::create.fourier.basis(c(tlist[1],tlist[P]),N)
-  return(fda::eval.basis(tlist[train],bFor))
+    b.for <- fda::create.fourier.basis(c(tlist[1], tlist[P]), N)
+  return(fda::eval.basis(tlist[train], b.for))
 }
 
 #' Finds the transformation matrix for the B-spline basis.
@@ -85,14 +86,14 @@ FourierBasis <- function(tlist, N, train = NULL){
 BSplineBasis <- function(tlist, N, train = NULL){
   P <- length(tlist)
   # Default for training points is to use all points
-  if(is.null(train)){
+  if (is.null(train)){
     train <- 1:P
   }
-  # The first two lines below shift the time scale so that the difference between
-  # knots is roughly equal to 1. To see where the knots are placed take
+  # The first two lines below shift the time scale so that the difference
+  # between knots is roughly equal to 1. To see where the knots are placed take
   # bSpl$params
   tlist.diff <- tlist[2] - tlist[1]
-  tlist <- tlist/tlist.diff
-  bSpl <- fda::create.bspline.basis(c(tlist[1],tlist[P]),N)
-  return(fda::eval.basis(tlist[train],bSpl))
+  tlist <- tlist / tlist.diff
+  b.spl <- fda::create.bspline.basis(c(tlist[1], tlist[P]), N)
+  return(fda::eval.basis(tlist[train], b.spl))
 }
