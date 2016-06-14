@@ -4,18 +4,21 @@
 \alias{FastLaplace}
 \title{Implements the fast Laplace algorithm.}
 \usage{
-FastLaplace(PHI, y, sigma2, eta, verbose)
+FastLaplace(PHI, y, sigma2, eta, roundit = 0L, verbose = 0L)
 }
 \arguments{
 \item{PHI}{measurement matrix.}
 
 \item{y}{CS measurements.}
 
-\item{sigma2}{Initial noise variance.}
+\item{sigma2}{initial noise variance.}
 
-\item{eta}{Threshold in determining convergence of marginal likelihood.}
+\item{eta}{threshold in determining convergence of marginal likelihood.}
 
-\item{verbose}{Print to screen which basis are added, re-estimated, or deleted.}
+\item{roundit}{whether or not to round the marginal likelihood, in order to
+avoid machine precision error when comparing across platforms.}
+
+\item{verbose}{print to screen which basis are added, re-estimated, or deleted.}
 }
 \value{
 A list containing the following elements:
@@ -28,18 +31,26 @@ A list containing the following elements:
 }
 }
 \description{
-This code implements the fast Laplace algorithm from [1], which is based on
-  the BCS code available from [2].
+This code implements the fast Laplace algorithm from [1], which is based
+  on the BCS code available from [2]. The fast Laplace algorithm is a method
+  used to solve the compressive sensing problem, or in general, a highly
+  underdetermined system of equations. This system can be written out as:
+  \deqn{y = \Phiw + n}
+  where \eqn{w} is the vector of unknown coefficients to solve for and
+  \eqn{n} is random noise. The method uses a Bayesian framework, and in
+  particular, uses a Laplace prior to incorporate the information that most
+  of the coefficients in the solution vector are zero or close to zero.
 }
 \references{
-[1] S. D. Babacan, R. Molina, A. K. Katsaggelos. "Bayesian Compressive
-Sensing using Laplace Priors",
+[1] S. D. Babacan, R. Molina and A. K. Katsaggelos, "Bayesian
+Compressive Sensing Using Laplace Priors," in IEEE Transactions on Image
+Processing, vol. 19, no. 1, pp. 53-63, Jan. 2010.
 
 [2] S. Ji, Y. Xue, L. Carin, "Bayesian Compressive Sensing," IEEE Trans.
 Signal Processing, vol. 56, no. 6, June 2008.
 
-[3] M. Tipping and A. Faul, “Fast marginal likelihood maximisation
-for sparse Bayesian models,” in Proc. 9th Int. Workshop Artificial Intelligence
+[3] M. Tipping and A. Faul, "Fast marginal likelihood maximisation
+for sparse Bayesian models," in Proc. 9th Int. Workshop Artificial Intelligence
 and Statistics, C. M. Bishop and B. J. Frey, Eds., 2003.
 }
 

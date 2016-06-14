@@ -15,16 +15,23 @@ setdiff <- function(first, second) {
 
 #'   Implements the fast Laplace algorithm.
 #'
-#'   This code implements the fast Laplace algorithm from [1], which is based on
-#'   the BCS code available from [2].
+#'   This code implements the fast Laplace algorithm from [1], which is based
+#'   on the BCS code available from [2]. The fast Laplace algorithm is a method
+#'   used to solve the compressive sensing problem, or in general, a highly
+#'   underdetermined system of equations. This system can be written out as:
+#'   \deqn{y = \Phiw + n}
+#'   where \eqn{w} is the vector of unknown coefficients to solve for and
+#'   \eqn{n} is random noise. The method uses a Bayesian framework, and in
+#'   particular, uses a Laplace prior to incorporate the information that most
+#'   of the coefficients in the solution vector are zero or close to zero.
 #'
 #' @param PHI measurement matrix.
 #' @param y CS measurements.
-#' @param sigma2 Initial noise variance.
-#' @param eta Threshold in determining convergence of marginal likelihood.
-#' @param roundit Whether or not to round the marginal likelihood, in order to
-#'       avoid machine precision error.
-#' @param verbose Print to screen which basis are added, re-estimated, or deleted.
+#' @param sigma2 initial noise variance.
+#' @param eta threshold in determining convergence of marginal likelihood.
+#' @param roundit whether or not to round the marginal likelihood, in order to
+#'       avoid machine precision error when comparing across platforms.
+#' @param verbose print to screen which basis are added, re-estimated, or deleted.
 #' @return A list containing the following elements:
 #' \tabular{lll}{
 #'   \code{weights} \tab \tab sparse weights\cr
@@ -33,12 +40,13 @@ setdiff <- function(first, second) {
 #'   \code{errbars} \tab \tab one standard deviation around the sparse weights\cr
 #'   \code{alpha} \tab \tab sparse hyperparameters (1/gamma)
 #' }
-#' @references [1] S. D. Babacan, R. Molina, A. K. Katsaggelos. "Bayesian Compressive
-#' Sensing using Laplace Priors",
+#' @references [1] S. D. Babacan, R. Molina and A. K. Katsaggelos, "Bayesian
+#' Compressive Sensing Using Laplace Priors," in IEEE Transactions on Image
+#' Processing, vol. 19, no. 1, pp. 53-63, Jan. 2010.
 #' @references [2] S. Ji, Y. Xue, L. Carin, "Bayesian Compressive Sensing," IEEE Trans.
 #' Signal Processing, vol. 56, no. 6, June 2008.
-#' @references [3] M. Tipping and A. Faul, “Fast marginal likelihood maximisation
-#' for sparse Bayesian models,” in Proc. 9th Int. Workshop Artificial Intelligence
+#' @references [3] M. Tipping and A. Faul, "Fast marginal likelihood maximisation
+#' for sparse Bayesian models," in Proc. 9th Int. Workshop Artificial Intelligence
 #' and Statistics, C. M. Bishop and B. J. Frey, Eds., 2003.
 #' @export
 FastLaplace <- function(PHI, y, sigma2, eta, roundit = 0L, verbose = 0L) {

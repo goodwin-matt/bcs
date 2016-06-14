@@ -9,10 +9,14 @@
 #include <iostream>
 #include <iomanip>
 using namespace Rcpp;
-//test
+
 //' @useDynLib bcs
 //' @importFrom Rcpp sourceCpp
 
+// Finds the intersection between two vectors. Returns a matrix with two columns:
+// the first column contains the elements in the intersection and the second
+// column contains the indices of those elements in the second vector. Returns
+// a sorted matrix, according to the first column.
 // [[Rcpp::export]]
 arma::umat intersect(arma::umat first, arma::umat second){
   int m = first.n_rows;
@@ -27,18 +31,18 @@ arma::umat intersect(arma::umat first, arma::umat second){
   int count = 0;
   arma::umat inter;
   inter.ones(size,2);
+  // Iterate through both vectors.
   for(int i=0; i<m; i++){
-    double value = first(i);
     for(int j=0; j<n; j++){
-      if(value==second(j)){
-        inter(count,0) = value;
+      if(first(i)==second(j)){
+        inter(count,0) = first(i);
         inter(count,1) = j;
         count++;
         break;
       }
     }
   }
-  if(count==0){
+  if(count==0){ // If no elements in intersection return null matrix
     arma::umat null_matrix;
     return null_matrix;
   }
@@ -49,6 +53,9 @@ arma::umat intersect(arma::umat first, arma::umat second){
   }
 }
 
+// Finds the set difference between two vectors. The second vector is assumed to
+// be a subset of the first vector. Returns a column of the elements in the set
+// difference.
 // [[Rcpp::export]]
 arma::umat setdiff(arma::umat first, arma::umat second){
   int m = first.n_rows;
@@ -71,7 +78,7 @@ arma::umat setdiff(arma::umat first, arma::umat second){
       count++;
     }
   }
-  if(count==0){
+  if(count==0){ // If no elements in set difference, return null matrix
     arma::umat null_answer;
     return null_answer;
   }
@@ -82,16 +89,23 @@ arma::umat setdiff(arma::umat first, arma::umat second){
 
 //'   Implements the fast Laplace algorithm.
 //'
-//'   This code implements the fast Laplace algorithm from [1], which is based on
-//'   the BCS code available from [2].
+//'   This code implements the fast Laplace algorithm from [1], which is based
+//'   on the BCS code available from [2]. The fast Laplace algorithm is a method
+//'   used to solve the compressive sensing problem, or in general, a highly
+//'   underdetermined system of equations. This system can be written out as:
+//'   \deqn{y = \Phiw + n}
+//'   where \eqn{w} is the vector of unknown coefficients to solve for and
+//'   \eqn{n} is random noise. The method uses a Bayesian framework, and in
+//'   particular, uses a Laplace prior to incorporate the information that most
+//'   of the coefficients in the solution vector are zero or close to zero.
 //'
 //' @param PHI measurement matrix.
 //' @param y CS measurements.
-//' @param sigma2 Initial noise variance.
-//' @param eta Threshold in determining convergence of marginal likelihood.
-//' @param roundit Whether or not to round the marginal likelihood, in order to
+//' @param sigma2 initial noise variance.
+//' @param eta threshold in determining convergence of marginal likelihood.
+//' @param roundit whether or not to round the marginal likelihood, in order to
 //'       avoid machine precision error when comparing across platforms.
-//' @param verbose Print to screen which basis are added, re-estimated, or deleted.
+//' @param verbose print to screen which basis are added, re-estimated, or deleted.
 //' @return A list containing the following elements:
 //' \tabular{lll}{
 //'   \code{weights} \tab \tab sparse weights\cr
@@ -100,12 +114,13 @@ arma::umat setdiff(arma::umat first, arma::umat second){
 //'   \code{errbars} \tab \tab one standard deviation around the sparse weights\cr
 //'   \code{alpha} \tab \tab sparse hyperparameters (1/gamma)
 //' }
-//' @references [1] S. D. Babacan, R. Molina, A. K. Katsaggelos. "Bayesian Compressive
-//' Sensing using Laplace Priors",
+//' @references [1] S. D. Babacan, R. Molina and A. K. Katsaggelos, "Bayesian
+//' Compressive Sensing Using Laplace Priors," in IEEE Transactions on Image
+//' Processing, vol. 19, no. 1, pp. 53-63, Jan. 2010.
 //' @references [2] S. Ji, Y. Xue, L. Carin, "Bayesian Compressive Sensing," IEEE Trans.
 //' Signal Processing, vol. 56, no. 6, June 2008.
-//' @references [3] M. Tipping and A. Faul, “Fast marginal likelihood maximisation
-//' for sparse Bayesian models,” in Proc. 9th Int. Workshop Artificial Intelligence
+//' @references [3] M. Tipping and A. Faul, "Fast marginal likelihood maximisation
+//' for sparse Bayesian models," in Proc. 9th Int. Workshop Artificial Intelligence
 //' and Statistics, C. M. Bishop and B. J. Frey, Eds., 2003.
 //' @export
 // [[Rcpp::export]]
@@ -115,7 +130,7 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
   double N = PHI.n_cols;
 
   // Calculates initial alpha, from equation (26) in [3]
-  // Note: alpha = 1/gamma where gamma is the parameters used in [1]
+  // Note: alpha = 1/gamma where gamma is the parameter used in [1]
   arma::mat PHIy = PHI.t()*y;
   arma::mat PHI2(sum(square(PHI),0)); // Square of 2-Norm of all basis
   PHI2 = PHI2.t();
@@ -254,8 +269,9 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
 
     // Finds the max of the marginal likelihood.
     arma::uword idx;
-    // NOTE: When comparing this with the matlab code it is only accurate to within
-    // seven decimal places, then you start getting little errors
+    // NOTE: When comparing this with the original matlab code, the elements of
+    // 'ml' are only accurate to within seven decimal places or so because of
+    // machine precision error. So the max of 'ml' can begin to be different.
     if(roundit == TRUE){
       round_ml = round(ml*pow(10,7))/pow(10,7);
     }
@@ -374,7 +390,6 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
   return List::create(Named("weights",weights),Named("used",used),
                       Named("sigma2",sigma2_re),Named("errbars",errbars),
                       Named("alpha",alpha.head_rows(add_count)));
-
 }
 
 

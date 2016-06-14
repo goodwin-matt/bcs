@@ -11,15 +11,16 @@ BSplineBasis(tlist, N, train = NULL)
 
 \item{N}{number of basis in the matrix.}
 
-\item{train}{indices corresponding to which rows of the matrix to keep.}
+\item{train}{indices corresponding to which rows of the matrix to keep.
+Default is to keep all rows.}
 }
 \value{
 A PxN matrix where P is equal to the length of \code{train} and N is
-       the number of basis.
+       the number of B-spline basis.
 }
 \description{
-Uses the package \code{fda} to find a matrix where each column is a basis
-function from the B-spline basis, evaluated at particular points along the
-rows of the matrix.
+Uses the package \code{\link{fda}} to find a transformation matrix where each
+column is a basis function from the B-spline basis, evaluated at specified
+points along the rows of the matrix.
 }
 

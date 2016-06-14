@@ -4,25 +4,29 @@
 \alias{WaveletBasis}
 \title{Finds the discrete wavelet transform matrix.}
 \usage{
-WaveletBasis(signal, N, train, wavelet)
+WaveletBasis(signal, N, train = NULL, wavelet = "Haar")
 }
 \arguments{
-\item{signal}{original signal to find the wavelet transform for.}
+\item{signal}{original signal to find the wavelet transform for. Must be the
+same length as the number of basis to keep.}
 
 \item{N}{number of wavelet basis to keep.}
 
-\item{train}{the rows to keep of the matrix.}
+\item{train}{indices corresponding to which rows of the matrix to keep.
+Default is to keep all rows.}
 
-\item{wavelet}{the type of wavelet basis to use. See the documentation for the
-package \code{wmtsa} for more information.}
+\item{wavelet}{the type of wavelet basis to use. See
+\code{\link[wmtsa]{wavDaubechies}} from \code{wmtsa} for types.}
 }
 \value{
 A PxN discrete wavelet transform matrix, where P is equal to the
        length of \code{train} and N is the number of basis.
 }
 \description{
-Uses the package \code{wmtsa} to find the matrix of a wavelet basis. Each
-column is a basis function from the given basis, evaluated at particular points
-along the rows of the matrix.
+Uses the functions \code{\link[wmtsa]{wavDWT}} and
+\code{\link[wmtsa]{reconstruct}} from the \code{wmtsa} package to find the
+transformation matrix of the given wavelet basis type. Each column of the
+matrix is a basis function from the wavelet basis type, evaluated at specified
+points along the rows of the matrix.
 }
 

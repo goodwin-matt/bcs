@@ -1,4 +1,4 @@
-context("Testing Fast Laplace")
+context("Testing fast Laplace")
 
 test_that("General output for small matrix", {
   bFor <- data.matrix(read.csv('bForEZ.csv',header=TRUE)[,-1])
@@ -11,11 +11,15 @@ test_that("General output for small matrix", {
   expect_equal(sum(test.e[[4]]),0.23274684494650607625)
   expect_equal(sum(test.e[[5]]),1819749.4156093874481)
   expect_equal(length(test.e[[1]]), 87)
+  x.lap <- rep(0,150)
+  x.lap[test.e[[2]]] <- test.e[[1]]
+  expect_equal(FindSparse(bFor, signal, roundit = TRUE), x.lap)
 })
 
 # # Using the bForEZ for idx==132 for Matlab and idx==126 and for R count==81 and idx==65
 # # is where the rounding difference is between R and matlab.
 
+skip_on_cran()
 test_that("General output for large matrix", {
   bFor <- data.matrix(read.csv('/Users/goodwinm/MyStuff/Research/Code/BCS_code/Test_Files/bFor2.csv',
                                header=TRUE)[,-1])

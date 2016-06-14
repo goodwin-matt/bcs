@@ -4,22 +4,41 @@
 \alias{FindSparse}
 \title{Implements the fast Laplace algorithm.}
 \usage{
-FindSparse(PHI, y, eta, verbose = FALSE)
+FindSparse(PHI, y, eta = 1e-08, roundit = FALSE, verbose = FALSE)
 }
 \arguments{
-\item{PHI}{Measurement matrix.}
+\item{PHI}{measurement matrix.}
 
-\item{y}{Sample from original signal.}
+\item{y}{sample from original signal.}
 
-\item{eta}{Tolerance level in determining convergence of marginal likelihood.}
+\item{eta}{tolerance level in determining convergence of marginal likelihood.}
 
-\item{verbose}{Print to screen which basis are added, re-estimated, or deleted.}
+\item{roundit}{whether or not to round the marginal likelihood, in order to
+avoid machine precision error when comparing across platforms.}
+
+\item{verbose}{print to screen which basis are added, re-estimated, or deleted.}
 }
 \value{
 The sparse signal as found by the fast Laplace algorithm.
 }
 \description{
-Given samples from some signal and given a measurement matrix, find the
-sparse respresentation of a signal using compressive sensing.
+Given samples from some signal and a measurement matrix, find the sparse
+respresentation of the signal using compressive sensing. Note that this
+function is a convenient wrapper for the function \code{\link{FastLaplace}}.
+}
+\details{
+The fast Laplace algorithm is a method used to solve the compressive sensing
+problem, or in general, a highly underdetermined system of equations. This
+system can be written out as:
+  \deqn{y = \Phiw + n}
+where \eqn{w} is the vector of unknown coefficients to solve for and \eqn{n}
+is random noise. The method uses a Bayesian framework, and in particular, uses
+a Laplace prior to incorporate the information that most of the coefficients
+in the solution vector are zero or close to zero. See [1] for details.
+}
+\references{
+[1] S. D. Babacan, R. Molina and A. K. Katsaggelos, "Bayesian
+Compressive Sensing Using Laplace Priors," in IEEE Transactions on Image
+Processing, vol. 19, no. 1, pp. 53-63, Jan. 2010.
 }
 
