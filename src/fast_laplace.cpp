@@ -117,8 +117,8 @@ arma::umat setdiff(arma::umat first, arma::umat second){
 //' @references [1] S. D. Babacan, R. Molina and A. K. Katsaggelos, "Bayesian
 //' Compressive Sensing Using Laplace Priors," in IEEE Transactions on Image
 //' Processing, vol. 19, no. 1, pp. 53-63, Jan. 2010.
-//' @references [2] S. Ji, Y. Xue, L. Carin, "Bayesian Compressive Sensing," IEEE Trans.
-//' Signal Processing, vol. 56, no. 6, June 2008.
+//' @references [2] S. Ji, Y. Xue, L. Carin, "Bayesian Compressive Sensing,"
+//' IEEE Trans. Signal Processing, vol. 56, no. 6, June 2008.
 //' @references [3] M. Tipping and A. Faul, "Fast marginal likelihood maximisation
 //' for sparse Bayesian models," in Proc. 9th Int. Workshop Artificial Intelligence
 //' and Statistics, C. M. Bishop and B. J. Frey, Eds., 2003.
@@ -136,7 +136,8 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
   PHI2 = PHI2.t();
   arma::mat ratio(square(PHIy)/PHI2);
   arma::uword index;
-  double maxr = ratio.max(index); // Finds the best basis to start off with, see [3].
+  // Finds the best basis to start off with, see [3].
+  double maxr = ratio.max(index);
   arma::mat alpha; alpha.zeros(N,1);
   alpha(0,0) = PHI2(index)/(maxr-sigma2);
 
@@ -190,11 +191,15 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
     arma::mat q = Q;
     // For the alphas that are not infinity
     //Equation 53 in [1]
-    s(indices.head_rows(add_count)) = alpha.head_rows(add_count)%S(indices.head_rows(add_count))/
-                                      (alpha.head_rows(add_count)-S(indices.head_rows(add_count)));
+    s(indices.head_rows(add_count)) = alpha.head_rows(add_count)
+      %S(indices.head_rows(add_count))
+      /(alpha.head_rows(add_count)
+      -S(indices.head_rows(add_count)));
     //Equation 54 in [1]
-    q(indices.head_rows(add_count)) = alpha.head_rows(add_count)%Q(indices.head_rows(add_count))/
-                                      (alpha.head_rows(add_count)-S(indices.head_rows(add_count)));
+    q(indices.head_rows(add_count)) = alpha.head_rows(add_count)
+      %Q(indices.head_rows(add_count))
+      /(alpha.head_rows(add_count)
+      -S(indices.head_rows(add_count)));
 
     //Equation 35 in [1]
     double lambda = 2*(add_count - 1)/sum(sum(1/alpha.head_rows(add_count)));
@@ -221,7 +226,8 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
     // Finds the indices of the alphas that are not infinity.
     arma::umat ig0 = find(theta>lambda);
     arma::umat ire = ::intersect(ig0,indices.head_rows(add_count));
-    // These are the indices of where the values appear in the vector "indices" above.
+    // These are the indices of where the values appear in the vector "indices"
+    // above.
     arma::umat which = ire.col(1);
     // Indices for re-estimation.
     ire = ire.col(0);
@@ -240,7 +246,8 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
 
     if(iad.n_rows>0){
       Alpha = nextAlphas(iad);
-      ml(iad) = log(Alpha/(Alpha + s(iad))) + pow(q(iad),2)/(Alpha + s(iad)) - lambda/Alpha;
+      ml(iad) = log(Alpha/(Alpha + s(iad))) + pow(q(iad),2)/(Alpha + s(iad))
+        - lambda/Alpha;
       which = ::intersect(deleted.head_rows(delete_count),iad);
       // Makes sure the deleted basis stay deleted
       if(which.n_rows>0){
@@ -328,7 +335,8 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
         newSig.submat(0,0,(sigM-1),(sigN-1)) = Sig+Sigii*comm1*comm1.t();
         newSig.submat(0,sigN,(sigM-1),(sigN+offN-1)) = off;
         newSig.submat(sigM,0,(sigM+offN-1),(sigN-1)) = off.t();
-        newSig.submat((sigM+offN-1),(sigN+offN-1),(sigM+offN-1),(sigN+offN-1)) = Sigii;
+        newSig.submat((sigM+offN-1),(sigN+offN-1),(sigM+offN-1),(sigN+offN-1))
+          = Sigii;
         Sig = newSig;
         mu.head_rows(add_count) -= mui(0)*comm1;
         mu(add_count,0) = mui(0);
@@ -370,7 +378,8 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
         }
       }
       else if(w.n_elem>0 & add_count==1){
-        // Something is wrong, trying to delete the only coefficient that has been added.
+        // Something is wrong, trying to delete the only coefficient that has
+        // been added.
         break;
       }
     }

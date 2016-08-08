@@ -6,8 +6,6 @@
 #' matrix is a basis function from the wavelet basis type, evaluated at specified
 #' points along the rows of the matrix.
 #'
-#' @param signal original signal to find the wavelet transform for. Must be the
-#'        same length as the number of basis to keep.
 #' @param N number of wavelet basis to keep.
 #' @param train indices corresponding to which rows of the matrix to keep.
 #'        Default is to keep all rows.
@@ -16,7 +14,8 @@
 #' @return A PxN discrete wavelet transform matrix, where P is equal to the
 #'        length of \code{train} and N is the number of basis.
 #' @export
-WaveletBasis <- function(signal, N, train = NULL, wavelet = "Haar"){
+WaveletBasis <- function(N, train = NULL, wavelet = "Haar"){
+  signal <- 1:N
   P <- length(signal)
   # Default for training points is to use all points
   if (is.null(train)){

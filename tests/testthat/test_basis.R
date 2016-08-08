@@ -10,8 +10,8 @@ test_that("wavelets, Fourier, B-splines", {
                                              header = TRUE))
   dimnames(b.wav.test) <-  NULL
   dimnames(b.wav.null.test) <- NULL
-  expect_equal(WaveletBasis(1:8, 8, seq(1:5)), b.wav.test)
-  expect_equal(WaveletBasis(1:8, 8), b.wav.null.test)
+  expect_equal(WaveletBasis(8, seq(1:5)), b.wav.test)
+  expect_equal(WaveletBasis(8), b.wav.null.test)
   expect_equal(FourierBasis(1:10, 11, 1:5), b.for.test)
   expect_equal(FourierBasis(1:10, 11), b.for.null.test)
   expect_equal(BSplineBasis(1:10, 11, 1:5), b.spline.test)
