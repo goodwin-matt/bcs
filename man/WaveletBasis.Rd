@@ -4,12 +4,9 @@
 \alias{WaveletBasis}
 \title{Finds the discrete wavelet transform matrix.}
 \usage{
-WaveletBasis(signal, N, train = NULL, wavelet = "Haar")
+WaveletBasis(N, train = NULL, wavelet = "Haar")
 }
 \arguments{
-\item{signal}{original signal to find the wavelet transform for. Must be the
-same length as the number of basis to keep.}
-
 \item{N}{number of wavelet basis to keep.}
 
 \item{train}{indices corresponding to which rows of the matrix to keep.

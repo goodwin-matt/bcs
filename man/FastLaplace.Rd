@@ -46,8 +46,8 @@ This code implements the fast Laplace algorithm from [1], which is based
 Compressive Sensing Using Laplace Priors," in IEEE Transactions on Image
 Processing, vol. 19, no. 1, pp. 53-63, Jan. 2010.
 
-[2] S. Ji, Y. Xue, L. Carin, "Bayesian Compressive Sensing," IEEE Trans.
-Signal Processing, vol. 56, no. 6, June 2008.
+[2] S. Ji, Y. Xue, L. Carin, "Bayesian Compressive Sensing,"
+IEEE Trans. Signal Processing, vol. 56, no. 6, June 2008.
 
 [3] M. Tipping and A. Faul, "Fast marginal likelihood maximisation
 for sparse Bayesian models," in Proc. 9th Int. Workshop Artificial Intelligence
