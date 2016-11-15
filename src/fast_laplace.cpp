@@ -173,6 +173,7 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
   arma::mat Sigi;
   arma::mat Alpha;
   arma::mat round_ml;
+  arma::umat which;
   // Vector of the possible basis indices.
   arma::uvec range_mat = arma::linspace<arma::uvec>(0,N-1,N);
   arma::umat range_m = arma::umat(range_mat);
@@ -226,14 +227,14 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
     // Finds the indices of the alphas that are not infinity.
     arma::umat ig0 = find(theta>lambda);
     arma::umat ire = ::intersect(ig0,indices.head_rows(add_count));
-    // These are the indices of where the values appear in the vector "indices"
-    // above.
-    arma::umat which = ire.col(1);
-    // Indices for re-estimation.
-    ire = ire.col(0);
 
     // If there are coefficients to re-estimate.
     if(ire.n_rows>0){
+      // These are the indices of where the values appear in the vector "indices"
+      // above.
+      which = ire.col(1);
+      // Indices for re-estimation.
+      ire = ire.col(0);
       Alpha = nextAlphas(ire);
       // We are subtracting off the marginal likelihood of already calc. alpha
       ml(ire) = pow(q(ire),2)/(Alpha + s(ire)) + log(Alpha/(Alpha + s(ire))) -
