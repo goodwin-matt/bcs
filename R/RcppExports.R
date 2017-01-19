@@ -53,3 +53,47 @@ FastLaplace <- function(PHI, y, sigma2, eta, roundit = 0L, verbose = 0L) {
     .Call('bcs_FastLaplace', PACKAGE = 'bcs', PHI, y, sigma2, eta, roundit, verbose)
 }
 
+GetCol <- function(index, A, B) {
+    .Call('bcs_GetCol', PACKAGE = 'bcs', index, A, B)
+}
+
+GetColSumSquared <- function(A, B) {
+    .Call('bcs_GetColSumSquared', PACKAGE = 'bcs', A, B)
+}
+
+MultMatrix <- function(D01, D02, x, mode) {
+    .Call('bcs_MultMatrix', PACKAGE = 'bcs', D01, D02, x, mode)
+}
+
+#'   Implements the fast Laplace Kronecker algorithm.
+#'
+#'   This code implements the fast Laplace Kronecker algorithm based on the
+#'   original fast Laplace algorithm and [1]. The algorithm is essentially the
+#'   same as the fast Laplace algorithm, with the difference that PHI is assumed
+#'   to have a Kronecker structure made up of D01 and D02 (kron(D02, D01)).
+#'   This implies that PHI can be represented by a much smaller dimension and
+#'   therefore the speed of matrix multiplication involving PHI is increased.
+#' @param D01 left measurement matrix.
+#' @param D02 right measurement matrix.
+#' @param y CS measurements.
+#' @param sigma2 initial noise variance.
+#' @param eta threshold in determining convergence of marginal likelihood.
+#' @param roundit whether or not to round the marginal likelihood, in order to
+#'       avoid machine precision error when comparing across platforms.
+#' @param verbose print to screen which basis are added, re-estimated, or deleted.
+#' @return A list containing the following elements:
+#' \tabular{lll}{
+#'   \code{weights} \tab \tab sparse weights\cr
+#'   \code{used} \tab \tab the positions of sparse weights\cr
+#'   \code{sigma2} \tab \tab re-estimated noise variance\cr
+#'   \code{errbars} \tab \tab one standard deviation around the sparse weights\cr
+#'   \code{alpha} \tab \tab sparse hyperparameters (1/gamma)
+#' }
+#' @references [1] Cesar F. Caiafa and Andrzej Cichocki, "Computing Sparse
+#' Representations of Multidimensional Signals Using Kronecker Bases," in Neural
+#' Computation, vol. 25, no. 1, pp. 186-220, 2013.
+#' @export
+FastLaplaceKron <- function(D01, D02, y, sigma2, eta, roundit = 0L, verbose = 0L) {
+    .Call('bcs_FastLaplaceKron', PACKAGE = 'bcs', D01, D02, y, sigma2, eta, roundit, verbose)
+}
+

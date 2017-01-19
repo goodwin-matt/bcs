@@ -2,7 +2,9 @@
 
 export(BSplineBasis)
 export(FastLaplace)
+export(FastLaplaceKron)
 export(FindSparse)
+export(FindSparseKron)
 export(FourierBasis)
 export(WaveletBasis)
 importFrom(Rcpp,sourceCpp)

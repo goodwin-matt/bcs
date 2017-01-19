@@ -19,21 +19,21 @@ test_that("General output for small matrix", {
 # Using the bForEZ for idx==132 for Matlab and idx==126 and for R count==81
 # and idx==65 is where the rounding difference is between R and matlab.
 
-skip_on_cran()
-test_that("General output for large matrix", {
-  bFor <- data.matrix(read.csv('/Users/goodwinm/MyStuff/Research/Code/BCS_code/Test_Files/bFor2.csv',
-                               header=TRUE)[,-1])
-  signal <- matrix(read.csv('/Users/goodwinm/MyStuff/Research/Code/BCS_code/Test_Files/signal2.csv',
-                            header=TRUE)[,-1],800,1)
-  # testing when we round the maximum likelihood to 7 digits
-  test.e <- FastLaplace(bFor, signal, sd(signal)^2/800, 1e-8, TRUE)
-  expect_equal(sum(test.e[[1]]),0.095116009295516487643)
-  expect_equal(sum(test.e[[2]]),298117)
-  expect_equal(test.e[[3]][1], 0.011482830173325)
-  expect_equal(sum(test.e[[4]]),0.75847148556943433384)
-  expect_equal(sum(test.e[[5]]),18815188.135733500123)
-  expect_equal(length(test.e[[1]]), 551)
-})
+# skip_on_cran()
+# test_that("General output for large matrix", {
+#   bFor <- data.matrix(read.csv('/Users/goodwinm/MyStuff/Research/Code/bcs/tests/testthat/Test_Files_To_Stay_Local/bFor2.csv',
+#                                header=TRUE)[,-1])
+#   signal <- matrix(read.csv('/Users/goodwinm/MyStuff/Research/Code/bcs/tests/testthat/Test_Files_To_Stay_Local/signal2.csv',
+#                             header=TRUE)[,-1],800,1)
+#   # testing when we round the maximum likelihood to 7 digits
+#   test.e <- FastLaplace(bFor, signal, sd(signal)^2/800, 1e-8, TRUE)
+#   expect_equal(sum(test.e[[1]]),0.095116009295516487643)
+#   expect_equal(sum(test.e[[2]]),298117)
+#   expect_equal(test.e[[3]][1], 0.011482830173325)
+#   expect_equal(sum(test.e[[4]]),0.75847148556943433384)
+#   expect_equal(sum(test.e[[5]]),18815188.135733500123)
+#   expect_equal(length(test.e[[1]]), 551)
+# })
 
 
 
