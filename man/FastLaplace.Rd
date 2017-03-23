@@ -2,44 +2,58 @@
 % Please edit documentation in R/RcppExports.R
 \name{FastLaplace}
 \alias{FastLaplace}
-\title{Implements the fast Laplace algorithm.}
+\title{Implements the Fast Laplace Algorithm}
 \usage{
 FastLaplace(PHI, y, sigma2, eta, roundit = 0L, verbose = 0L)
 }
 \arguments{
-\item{PHI}{measurement matrix.}
+\item{PHI}{typically equals the product of a measurment matrix and basis
+representation matrix, such as the wavelet basis.
+The solution vector \eqn{w} is assumed to be sparse in the chosen basis.}
 
-\item{y}{CS measurements.}
+\item{y}{CS measurements, samples from the signal or function.}
 
 \item{sigma2}{initial noise variance.}
 
 \item{eta}{threshold in determining convergence of marginal likelihood.}
 
 \item{roundit}{whether or not to round the marginal likelihood, in order to
-avoid machine precision error when comparing across platforms.}
+avoid machine precision error when comparing across platforms.
+0 is False, 1 is True.}
 
-\item{verbose}{print to screen which basis are added, re-estimated, or deleted.}
+\item{verbose}{print which basis are added, re-estimated, or deleted.
+0 is False, 1 is True.}
 }
 \value{
 A list containing the following elements:
 \tabular{lll}{
-  \code{weights} \tab \tab sparse weights\cr
-  \code{used} \tab \tab the positions of sparse weights\cr
-  \code{sigma2} \tab \tab re-estimated noise variance\cr
-  \code{errbars} \tab \tab one standard deviation around the sparse weights\cr
-  \code{alpha} \tab \tab sparse hyperparameters (1/gamma)
+  \code{weights} \tab \tab sparse weights, the non-zero values of the sparse
+  vector \eqn{w}.\cr
+  \code{used} \tab \tab the positions of the sparse weights or non-zero
+  values.\cr
+  \code{sigma2} \tab \tab re-estimated noise variance.\cr
+  \code{errbars} \tab \tab one standard deviation around the sparse weights.\cr
+  \code{alpha} \tab \tab sparse hyperparameters (1/gamma).
 }
 }
 \description{
+Implements the fast Laplace algorithm in Rcpp. For a more user friendly
+  implementation of this function that makes things more convenient
+  see \code{\link{FindSparse}}.
+}
+\details{
 This code implements the fast Laplace algorithm from [1], which is based
-  on the BCS code available from [2]. The fast Laplace algorithm is a method
+  on [2]. The fast Laplace algorithm is a method
   used to solve the compressive sensing problem, or in general, a highly
-  underdetermined system of equations. This system can be written out as:
+  underdetermined system of equations. It does this by taking the
+  system of equations
   \deqn{y = \Phiw + n}
-  where \eqn{w} is the vector of unknown coefficients to solve for and
-  \eqn{n} is random noise. The method uses a Bayesian framework, and in
-  particular, uses a Laplace prior to incorporate the information that most
-  of the coefficients in the solution vector are zero or close to zero.
+  and converting it into a minimization problem
+  where we minimize the error with a constraint on \eqn{w}
+  (the vector we are solving for) that enforces
+  sparsity. The fast Laplace method uses a Bayesian framework, and in
+  particular, uses a Laplace prior to enforce sparsity on \eqn{w}.
+  See [1] for more information.
 }
 \references{
 [1] S. D. Babacan, R. Molina and A. K. Katsaggelos, "Bayesian

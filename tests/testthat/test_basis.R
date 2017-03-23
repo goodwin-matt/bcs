@@ -1,6 +1,7 @@
-context("Testing basis")
+context("Testing basis functions")
 
-test_that("wavelets, Fourier, B-splines", {
+test_that("the WaveletBasis, FourierBasis, and BSplineBasis functions produce
+          the correct matrices", {
   b.wav.test <- data.matrix(read.csv("bWavTest.csv", header = TRUE))
   b.wav.null.test <- data.matrix(read.csv("bWavNULLTest.csv", header = TRUE))
   b.for.test <- data.matrix(read.csv("bForTest.csv", header = TRUE))

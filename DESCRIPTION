@@ -1,21 +1,23 @@
 Package: bcs
 Type: Package
-Title: Bayesian Compressive Sensing
-Version: 0.0.0.9000
+Title: Bayesian Compressive Sensing Using Laplace Priors
+Version: 1.0.0
 Date: 2016-05-23
-Authors@R: person("Matt", "Goodwin", email = "gmatt18@gmail.com", role = c("aut", "cre"))
-Description: Implements the algorithm Fast Laplace found in the paper 'Bayesian
-    Compressive Sensing Using Laplace Priors'.
+Authors@R: person("Matt", "Goodwin", email = "gmatt18@gmail.com",
+    role = c("aut", "cre"))
+Description: A Bayesian method for solving the compressive sensing problem. 
+    In particular, this package implements the algorithm 'Fast Laplace' found 
+    in the paper 'Bayesian Compressive Sensing Using Laplace Priors' by Babacan, 
+    Molina, and Katsaggelos.
 License: MIT + file LICENSE
 LazyData: TRUE
 LinkingTo: Rcpp,
     RcppArmadillo,
     RcppGSL
 Imports:
-    Rcpp,
-    stats,
-    wmtsa,
-    splines,
-    fda
+    fda (>= 2.4.4),
+    stats (>= 3.3.2),
+    Rcpp (>= 0.12.5),
+    wmtsa (>= 2.0-1)
 RoxygenNote: 5.0.1
 Suggests: testthat

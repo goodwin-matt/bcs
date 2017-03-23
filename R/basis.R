@@ -1,18 +1,29 @@
-#' Finds the discrete wavelet transform matrix.
+#' Finds the Discrete Wavelet Transform Matrix
 #'
 #' Uses the functions \code{\link[wmtsa]{wavDWT}} and
 #' \code{\link[wmtsa]{reconstruct}} from the \code{wmtsa} package to find the
 #' transformation matrix of the given wavelet basis type. Each column of the
-#' matrix is a basis function from the wavelet basis type, evaluated at specified
-#' points along the rows of the matrix.
+#' matrix is a wavelet basis function.
 #'
-#' @param N number of wavelet basis to keep.
+#' @param N number of wavelet basis functions to include in matrix. Note that
+#'  N must be a
+#' power of 2, otherwise the matrix will include NA's. The reason for this has
+#' to do with how the wavelet basis is defined.
 #' @param train indices corresponding to which rows of the matrix to keep.
 #'        Default is to keep all rows.
 #' @param wavelet the type of wavelet basis to use. See
 #'        \code{\link[wmtsa]{wavDaubechies}} from \code{wmtsa} for types.
-#' @return A PxN discrete wavelet transform matrix, where P is equal to the
-#'        length of \code{train} and N is the number of basis.
+#' @return A P x N discrete wavelet transform matrix, where P is equal to the
+#'        length of \code{train} and N is the number of basis. If \code{train}
+#'        is \code{NULL} then P equals N.
+#' @examples
+#' # Find first 8 basis functions of the Haar wavelet type
+#' w.Haar <- WaveletBasis(8)
+#'
+#' # Find first 8 basis functions of the d4 wavelet type, keeping the first
+#' # half of the rows
+#' w.d4 <- WaveletBasis(8, 1:4, wavelet='d4')
+#'
 #' @export
 WaveletBasis <- function(N, train = NULL, wavelet = "Haar"){
   signal <- 1:N
@@ -41,18 +52,29 @@ WaveletBasis <- function(N, train = NULL, wavelet = "Haar"){
   return(basis)
 }
 
-#' Finds the discrete Fourier transformation matrix.
+#' Finds the Discrete Fourier Transformation Matrix
 #'
 #' Uses the package \code{\link{fda}} to find a transformation matrix where the
-#' columns are the different Fourier basis, evaluated at specified
+#' columns are the different Fourier basis functions, evaluated at specified
 #' points along the rows of the matrix.
 #'
-#' @param tlist an array of the specific points where the basis are evaluated at.
-#' @param N number of basis in the matrix.
+#' @param tlist an array of the specific points where the basis functions are
+#' evaluated at.
+#' @param N number of basis functions in the matrix.
 #' @param train indices corresponding to which rows of the matrix to keep.
 #'        Default is to keep all rows.
-#' @return A PxN discrete Fourier transformation matrix where P is equal to the
-#'        length of \code{train} and N is the number of basis.
+#' @return A P x N discrete Fourier transformation matrix where P is equal to the
+#'        length of \code{train} and N is the number of basis. If \code{train}
+#'        is \code{NULL} then P equals the length of \code{tlist}.
+#' @examples
+#' # Points to evaluate the basis functions at
+#' points <- c(0,1,2,3,4)
+#' # Find first 8 Fourier basis functions evaluted at "points"
+#' f <- FourierBasis(points, 8)
+#'
+#' # Find first 8 Fourier basis functions evaluated at "points" but only keep
+#' # last two rows
+#' f <- FourierBasis(points, 8, train = c(4,5))
 #' @export
 FourierBasis <- function(tlist, N, train = NULL){
   P <- length(tlist)
@@ -69,18 +91,29 @@ FourierBasis <- function(tlist, N, train = NULL){
   return(fda::eval.basis(tlist[train], b.for))
 }
 
-#' Finds the transformation matrix for the B-spline basis.
+#' Finds the Transformation Matrix for the B-spline Basis
 #'
 #' Uses the package \code{\link{fda}} to find a transformation matrix where each
 #' column is a basis function from the B-spline basis, evaluated at specified
 #' points along the rows of the matrix.
 #'
-#' @param tlist an array of the specific points where the basis are evaluated at.
-#' @param N number of basis in the matrix.
+#' @param tlist an array of the specific points where the basis functions are
+#' evaluated at.
+#' @param N number of basis functions in the matrix.
 #' @param train indices corresponding to which rows of the matrix to keep.
 #'        Default is to keep all rows.
-#' @return A PxN matrix where P is equal to the length of \code{train} and N is
-#'        the number of B-spline basis.
+#' @return A P x N discrete Fourier transformation matrix where P is equal to the
+#'        length of \code{train} and N is the number of basis. If \code{train}
+#'        is \code{NULL} then P equals the length of \code{tlist}.
+#' @examples
+#' # Points to evaluate the basis functions at
+#' points <- c(0,1,2,3,4)
+#' # Find first 8 B-spline basis functions evaluted at "points"
+#' b <- BSplineBasis(points, 8)
+#'
+#' # Find first 8 B-spline basis functions evaluated at "points" but only keep
+#' # last two rows
+#' b <- BSplineBasis(points, 8, train = c(4,5))
 #' @export
 BSplineBasis <- function(tlist, N, train = NULL){
   P <- length(tlist)

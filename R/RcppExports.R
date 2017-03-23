@@ -13,32 +13,45 @@ setdiff <- function(first, second) {
     .Call('bcs_setdiff', PACKAGE = 'bcs', first, second)
 }
 
-#'   Implements the fast Laplace algorithm.
+#'   Implements the Fast Laplace Algorithm
+#'
+#'   Implements the fast Laplace algorithm in Rcpp. For a more user friendly
+#'   implementation of this function that makes things more convenient
+#'   see \code{\link{FindSparse}}.
 #'
 #'   This code implements the fast Laplace algorithm from [1], which is based
-#'   on the BCS code available from [2]. The fast Laplace algorithm is a method
+#'   on [2]. The fast Laplace algorithm is a method
 #'   used to solve the compressive sensing problem, or in general, a highly
-#'   underdetermined system of equations. This system can be written out as:
+#'   underdetermined system of equations. It does this by taking the
+#'   system of equations
 #'   \deqn{y = \Phiw + n}
-#'   where \eqn{w} is the vector of unknown coefficients to solve for and
-#'   \eqn{n} is random noise. The method uses a Bayesian framework, and in
-#'   particular, uses a Laplace prior to incorporate the information that most
-#'   of the coefficients in the solution vector are zero or close to zero.
+#'   and converting it into a minimization problem
+#'   where we minimize the error with a constraint on \eqn{w}
+#'   (the vector we are solving for) that enforces
+#'   sparsity. The fast Laplace method uses a Bayesian framework, and in
+#'   particular, uses a Laplace prior to enforce sparsity on \eqn{w}.
+#'   See [1] for more information.
 #'
-#' @param PHI measurement matrix.
-#' @param y CS measurements.
+#' @param PHI typically equals the product of a measurment matrix and basis
+#' representation matrix, such as the wavelet basis.
+#' The solution vector \eqn{w} is assumed to be sparse in the chosen basis.
+#' @param y CS measurements, samples from the signal or function.
 #' @param sigma2 initial noise variance.
 #' @param eta threshold in determining convergence of marginal likelihood.
 #' @param roundit whether or not to round the marginal likelihood, in order to
 #'       avoid machine precision error when comparing across platforms.
-#' @param verbose print to screen which basis are added, re-estimated, or deleted.
+#'       0 is False, 1 is True.
+#' @param verbose print which basis are added, re-estimated, or deleted.
+#' 0 is False, 1 is True.
 #' @return A list containing the following elements:
 #' \tabular{lll}{
-#'   \code{weights} \tab \tab sparse weights\cr
-#'   \code{used} \tab \tab the positions of sparse weights\cr
-#'   \code{sigma2} \tab \tab re-estimated noise variance\cr
-#'   \code{errbars} \tab \tab one standard deviation around the sparse weights\cr
-#'   \code{alpha} \tab \tab sparse hyperparameters (1/gamma)
+#'   \code{weights} \tab \tab sparse weights, the non-zero values of the sparse
+#'   vector \eqn{w}.\cr
+#'   \code{used} \tab \tab the positions of the sparse weights or non-zero
+#'   values.\cr
+#'   \code{sigma2} \tab \tab re-estimated noise variance.\cr
+#'   \code{errbars} \tab \tab one standard deviation around the sparse weights.\cr
+#'   \code{alpha} \tab \tab sparse hyperparameters (1/gamma).
 #' }
 #' @references [1] S. D. Babacan, R. Molina and A. K. Katsaggelos, "Bayesian
 #' Compressive Sensing Using Laplace Priors," in IEEE Transactions on Image
@@ -51,49 +64,5 @@ setdiff <- function(first, second) {
 #' @export
 FastLaplace <- function(PHI, y, sigma2, eta, roundit = 0L, verbose = 0L) {
     .Call('bcs_FastLaplace', PACKAGE = 'bcs', PHI, y, sigma2, eta, roundit, verbose)
-}
-
-GetCol <- function(index, A, B) {
-    .Call('bcs_GetCol', PACKAGE = 'bcs', index, A, B)
-}
-
-GetColSumSquared <- function(A, B) {
-    .Call('bcs_GetColSumSquared', PACKAGE = 'bcs', A, B)
-}
-
-MultMatrix <- function(D01, D02, x, mode) {
-    .Call('bcs_MultMatrix', PACKAGE = 'bcs', D01, D02, x, mode)
-}
-
-#'   Implements the fast Laplace Kronecker algorithm.
-#'
-#'   This code implements the fast Laplace Kronecker algorithm based on the
-#'   original fast Laplace algorithm and [1]. The algorithm is essentially the
-#'   same as the fast Laplace algorithm, with the difference that PHI is assumed
-#'   to have a Kronecker structure made up of D01 and D02 (kron(D02, D01)).
-#'   This implies that PHI can be represented by a much smaller dimension and
-#'   therefore the speed of matrix multiplication involving PHI is increased.
-#' @param D01 left measurement matrix.
-#' @param D02 right measurement matrix.
-#' @param y CS measurements.
-#' @param sigma2 initial noise variance.
-#' @param eta threshold in determining convergence of marginal likelihood.
-#' @param roundit whether or not to round the marginal likelihood, in order to
-#'       avoid machine precision error when comparing across platforms.
-#' @param verbose print to screen which basis are added, re-estimated, or deleted.
-#' @return A list containing the following elements:
-#' \tabular{lll}{
-#'   \code{weights} \tab \tab sparse weights\cr
-#'   \code{used} \tab \tab the positions of sparse weights\cr
-#'   \code{sigma2} \tab \tab re-estimated noise variance\cr
-#'   \code{errbars} \tab \tab one standard deviation around the sparse weights\cr
-#'   \code{alpha} \tab \tab sparse hyperparameters (1/gamma)
-#' }
-#' @references [1] Cesar F. Caiafa and Andrzej Cichocki, "Computing Sparse
-#' Representations of Multidimensional Signals Using Kronecker Bases," in Neural
-#' Computation, vol. 25, no. 1, pp. 186-220, 2013.
-#' @export
-FastLaplaceKron <- function(D01, D02, y, sigma2, eta, roundit = 0L, verbose = 0L) {
-    .Call('bcs_FastLaplaceKron', PACKAGE = 'bcs', D01, D02, y, sigma2, eta, roundit, verbose)
 }
 

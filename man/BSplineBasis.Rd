@@ -2,25 +2,37 @@
 % Please edit documentation in R/basis.R
 \name{BSplineBasis}
 \alias{BSplineBasis}
-\title{Finds the transformation matrix for the B-spline basis.}
+\title{Finds the Transformation Matrix for the B-spline Basis}
 \usage{
 BSplineBasis(tlist, N, train = NULL)
 }
 \arguments{
-\item{tlist}{an array of the specific points where the basis are evaluated at.}
+\item{tlist}{an array of the specific points where the basis functions are
+evaluated at.}
 
-\item{N}{number of basis in the matrix.}
+\item{N}{number of basis functions in the matrix.}
 
 \item{train}{indices corresponding to which rows of the matrix to keep.
 Default is to keep all rows.}
 }
 \value{
-A PxN matrix where P is equal to the length of \code{train} and N is
-       the number of B-spline basis.
+A P x N discrete Fourier transformation matrix where P is equal to the
+       length of \code{train} and N is the number of basis. If \code{train}
+       is \code{NULL} then P equals the length of \code{tlist}.
 }
 \description{
 Uses the package \code{\link{fda}} to find a transformation matrix where each
 column is a basis function from the B-spline basis, evaluated at specified
 points along the rows of the matrix.
+}
+\examples{
+# Points to evaluate the basis functions at
+points <- c(0,1,2,3,4)
+# Find first 8 B-spline basis functions evaluted at "points"
+b <- BSplineBasis(points, 8)
+
+# Find first 8 B-spline basis functions evaluated at "points" but only keep
+# last two rows
+b <- BSplineBasis(points, 8, train = c(4,5))
 }
 
