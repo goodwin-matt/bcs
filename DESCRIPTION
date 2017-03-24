@@ -12,8 +12,7 @@ Description: A Bayesian method for solving the compressive sensing problem.
 License: MIT + file LICENSE
 LazyData: TRUE
 LinkingTo: Rcpp,
-    RcppArmadillo,
-    RcppGSL
+    RcppArmadillo
 Imports:
     fda (>= 2.4.4),
     stats (>= 3.3.2),
