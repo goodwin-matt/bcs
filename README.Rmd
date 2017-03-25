@@ -1,13 +1,18 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-bcs - Bayesian compressive sensing for R
-========================================
+# bcs - Bayesian compressive sensing for R
 
-Implements the fast Laplace algorithm for Bayesian compressive sensing. This algorithm comes from the paper 'Bayesian Compressive Sensing using Laplace Priors' by Babacan, Molina, and Katsaggelos. The original code was written in Matlab by the same authors as the paper. See LICENSE for more details.
+Implements the fast Laplace algorithm for Bayesian compressive sensing. This 
+algorithm comes from the paper 'Bayesian Compressive Sensing using Laplace 
+Priors' by Babacan, Molina, and Katsaggelos. The original code was written in 
+Matlab by the same authors as the paper. See LICENSE for more details.
 
 ##### Example
 
-``` r
+```{r, echo = TRUE}
 library(bcs)
 
 # size of the basis function expansion
@@ -39,10 +44,20 @@ error <- sqrt(mean((signal - signal_est)^2))
 
 ##### Installation:
 
-`install.packages("devtools")`
+``install.packages("devtools")``
 
-`devtools::install_github("gmatt18/bcs")`
+``devtools::install_github("gmatt18/bcs")``
 
 ##### Overview:
 
-The main function in `bcs` is `FindSparse`. This function requires a sensing matrix and samples from the signal or function of interest in order to recover the sparse coefficients. `bcs` also includes functions that create transformation matrices for the wavelet, Fourier, and B-spline bases.
+The main function in `bcs` is `FindSparse`. This function requires a sensing 
+matrix and samples from the signal or function of interest in order to recover 
+the sparse coefficients. `bcs` also includes functions that create transformation matrices for the wavelet, Fourier, and B-spline bases.
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
