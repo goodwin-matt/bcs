@@ -9,7 +9,7 @@
 #' used to solve the compressive sensing problem, or in general, a highly
 #' underdetermined system of equations. It does this by taking the
 #' system of equations
-#' \deqn{y = \Phiw + n}
+#' \deqn{y = \Phi w + n}
 #' and converting it into a minimization problem
 #' where we minimize the error with a constraint on \eqn{w}
 #' (the vector we are solving for) that enforces
