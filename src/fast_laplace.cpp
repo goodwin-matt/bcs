@@ -364,7 +364,7 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
       }
     }
     else{
-      if(w.n_elem > 0 & add_count > 1){ // Deletes basis.
+      if((w.n_elem > 0) & (add_count > 1)){ // Deletes basis.
         deleted(delete_count,0) = idx;
         delete_count++;
         arma::mat Sigii = Sig(w,w);
@@ -388,7 +388,7 @@ List FastLaplace(arma::mat PHI, arma::vec y, double sigma2, double eta,
           Rcout << "Delete " << idx << "\n";
         }
       }
-      else if(w.n_elem>0 & add_count==1){
+      else if((w.n_elem>0) & (add_count==1)){
         // Something is wrong, trying to delete the only coefficient that has
         // been added.
         break;

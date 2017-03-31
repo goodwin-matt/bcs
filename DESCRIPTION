@@ -9,7 +9,7 @@ Description: A Bayesian method for solving the compressive sensing problem.
     In particular, this package implements the algorithm 'Fast Laplace' found 
     in the paper 'Bayesian Compressive Sensing Using Laplace Priors' by Babacan, 
     Molina, and Katsaggelos.
-License: MIT + file LICENSE
+License: GPL-3 | file LICENSE
 LazyData: TRUE
 LinkingTo: Rcpp,
     RcppArmadillo

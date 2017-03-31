@@ -1,6 +1,4 @@
-YEAR: 2016-2017 (Years Matt Goodwin wrote R code)
-COPYRIGHT: Below is the orignal copyright notice as provided with the Matlab
-code implementing the 'Fast Laplace' algorithm in the paper 'Bayesian
+Below is the orignal copyright notice and license as provided with the original Matlab code implementing the 'Fast Laplace' algorithm in the paper 'Bayesian
 Compressive Sensing using Laplace Priors' by Babacan, Molina, and Katsaggelos.
 The Matlab code was written by the original authors and can be downloaded at:
 http://www.dbabacan.info/software.html.
