@@ -2,7 +2,7 @@ Package: bcs
 Type: Package
 Title: Bayesian Compressive Sensing Using Laplace Priors
 Version: 1.0.0
-Date: 2017-03-24
+Date: 2017-03-30
 Authors@R: person("Matt", "Goodwin", email = "gmatt18@gmail.com",
     role = c("aut", "cre"))
 Description: A Bayesian method for solving the compressive sensing problem. 
